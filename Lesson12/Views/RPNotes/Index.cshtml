@@ -1,0 +1,301 @@
+﻿@model List<Module>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section ScriptSection {
+    <script>
+        function UpdateNotes() {
+            var url = "/api/RPNotes/Save";
+            $.post(url,
+                $("#fmNotes").serialize(),
+                function (result) {
+                    if (result == -2)
+                        alert("Invalid input!");
+                    else if (result == -1)
+                        alert("Lesson not found!");
+                    else if (result == 0)
+                        alert("Failed to update database!")
+                    else
+                        alert("Notes successfully updated!");
+                }, "json"
+            );
+        }
+
+        function LoadModulesForTopic() {
+            var url = "/api/RPNotes/Modules";
+            var ddlModuleId = $("#ddlNewTopicModuleId");
+
+            ddlModuleId.html("");
+            $.getJSON(url, function (result) {
+                $.each(result, function (i, item) {
+                    ddlModuleId.append("<option value='" + item.moduleId + "'>" + item.moduleId + " - " + item.name + "</option>");
+                });
+            });
+        }
+
+        function LoadModules() {
+            var url = "/RPNotes/GetModules";
+            $("#divNavigation").load(url);
+        }
+
+        function LoadNotes(moduleId, lessonId) {
+            var url = "/RPNotes/GetNotes?moduleId=" + moduleId + "&lessonId=" + lessonId;
+            $("#divNotes").load(url);
+        }
+
+        function AddNewModule() {
+            var newModuleId = $("#txtNewModuleId").val();
+            var newModuleName = $("#txtNewModuleName").val();
+            var url = "/api/RPNotes/NewModule/" + newModuleId + "/" + newModuleName;
+
+            $.getJSON(url, function (result) {
+                if (result == 1) {
+                    alert("New module added!");
+                    $("#newModuleModal").modal("hide");
+                    LoadModules();
+                }
+                else if (result == 0)
+                    alert("Failed to update new module!")
+                else
+                    alert("Module id already exists!");
+            });
+        }
+
+        function AddNewTopic() {
+            var newModuleId = $("#ddlNewTopicModuleId").val();
+            var newTopicId = $("#txtNewTopicId").val();
+            var newTopicTitle = $("#txtNewTopicTitle").val();
+            var url = "/api/RPNotes/NewTopic/" + newModuleId + "/" + newTopicId + "/" + newTopicTitle;
+            alert(url);
+
+            $.getJSON(url, function (result) {
+                if (result == 1) {
+                    alert("New topic added!");
+                    $("#newTopicModal").modal("hide");
+                }
+                else if (result == 0)
+                    alert("Failed to add new topic!")
+                else
+                    alert("Topic id already exists!");
+            });
+        }
+
+        function UploadNewTopic() {
+            var url = "/api/RPNotes/NewTopic";
+
+            $.post(url, $("#fmNewTopic").serialize(), function (result) {
+                if (result == 1) {
+                    alert("New topic added!");
+                    $("#newTopicModal").modal("hide");
+                }
+                else if (result == 0)
+                    alert("Failed to add new topic!");
+            }, "json");
+        }
+
+        @{
+// TODO Lesson12 Solution Task: Perform ajax call to upload attachment
+// If failed to upload, display pop-up message "Attachment upload failed!"
+// If upload successful, display pop-up message "New attachment added!" and use $("#newAttachmentModal").modal("hide"); to dismiss the att new attachment code
+            }
+        function UploadNewAttachment() {
+            var moduleId = $("#txtLessonModuleId").val();
+            var lessonId = $("#txtLessonId").val();
+            var form = $("#fmAttachment").get(0);
+            var fileinput = $("#attachment").get(0);
+            var formdata = new FormData(form);
+            var url = "/api/RPNotes/NewAttachment/" + moduleId + "/" + lessonId;
+
+            // Insert code to peform ajax call below
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formdata,
+                success: function (data) {
+                    if (data == 0)
+                        alert("Attachment upload failed!")
+                    else {
+                        alert("New Attachment added!");
+                        $("#newAttachmentModal").modal("hide");
+                    }
+
+                },
+                contentType: false,
+                processData: false
+            });
+        }
+
+                @{
+// TODO Lesson12 Solution Task: Use $.getJSON to load the attachments
+            }
+        function LoadAttachments() {
+            var moduleId = $("#txtLessonModuleId").val();
+            var lessonId = $("#txtLessonId").val();
+            var url = "/api/RPNotes/" + moduleId + "/" + lessonId + "/Attachments"
+            var trAttachments = $("#trAttachments");
+
+            trAttachments.html("");
+
+            // perform the $.getJSON Ajax call below
+            $.getJSON(url, function (result) {
+                $.each(result, function (i, item) {
+                    var src = "/images/" + item.icon;
+                    var link = "/Attachments/" + item.fileName;
+                    trAttachments.append("<td>" + "<a href='" + link + "'><img src='"
+                        + src + "' width='48' height='48' /><br />" + item.fileName + "</a></td>");
+                });
+            });
+        };
+
+        $(document).ready(function () {
+            $("#btnSaveNotes").click(UpdateNotes);
+            $("#btnNewModule").click(AddNewModule);
+
+            $("#btnShowNewTopic").click(function () {
+                LoadModulesForTopic();
+                $("#txtNewTopicId").val("");
+                $("#txtNewTopicTitle").val("");
+            });
+            $("#btnNewTopic").click(UploadNewTopic);
+            $("#btnNewAttachment").click(UploadNewAttachment);
+        })
+    </script>
+}
+<div class="row">
+    <div class="col-3">
+        <img src="~/images/logo.png" style="width:100%;" /><br /><br />
+        <div style="margin:5px">
+            <button type="button" class="btn btn-success col-12" data-toggle="modal" data-target="#newTopicModal" id="btnShowNewTopic">New Topic</button>
+        </div>
+        <div class="modal fade" id="newTopicModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add New Topic</h4>
+                    </div>
+                    <div class="modal-body">
+                        <partial name="_Topic" model="new Topic()" />
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnNewTopic" type="button" class="btn btn-default">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin:5px">
+            <button type="button" class="btn btn-info col-12" data-toggle="modal" data-target="#newModuleModal">New Module</button>
+        </div>
+        <div class="modal fade" id="newModuleModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add New Module</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label class="control-label col-3"
+                                   style="text-align:left">Module Id:</label>
+                            <input id="txtNewModuleId"
+                                   class="form-control-input col-3" />
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-3"
+                                   style="text-align:left">Module Name:</label>
+                            <input id="txtNewModuleName"
+                                   class="form-control-input col-8" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnNewModule" type="button" class="btn btn-default">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="newAttachmentModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add New Attachment</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form enctype="multipart/form-data" id="fmAttachment" class="form-horizontal ">
+                            <div class="form-group">
+                                <label class="control-label col-2" for="picture">Picture:</label>
+                                <div class="col-10">
+                                    <input type="file" class="form-control" id="attachment" name="attachment" accept=".pdf,.docx,.txt">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnNewAttachment" type="button" class="btn btn-default">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="viewAttachmentsModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">View Attachments</h4>
+                    </div>
+                    <div class="modal-body" style="height:100px">
+                        <div id="divAttachments" class="col-12" style="overflow-x:auto">
+                            <table style="margin: 0 auto;width:100%">
+                                @{
+                                    // TODO Lesson12 Solution Task: Refer the following to have an idea of how to list the attachments
+                                }
+                                <tr id="trAttachments" style="text-align:center">
+                                    <td><a><img src="~/images/pdf.png" width="48" height="48" /><br />file download</a></td>
+                                    <td><a><img src="~/images/doc.png" width="48" height="48" /><br />file download</a></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="divNavigation" class="pre-scrollable col-12" style="width:300px;height:75vh;text-align:left">
+            <ul style="list-style-type:none;margin:0;padding:0">
+                @if (ViewData["byTopic"] == null)
+                {
+                    <partial name="_ModulesNav" model="Model" />
+                }
+                else
+                {
+                    <partial name="_TopicsNav" model="Model" />
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-8">
+
+        <div id="divNotes">
+            @if (Model.Count > 0 && Model[0].Lesson.ToList().Count > 0)
+            {
+                <partial name="_Note" model="Model[0].Lesson.ToList()[0]" />
+            }
+            else
+            {
+                <partial name="_Note" model="new Lesson();" />
+            }
+        </div>
+        <div class="col-offset-5 col-10">
+            <button id="btnSaveNotes" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</div>

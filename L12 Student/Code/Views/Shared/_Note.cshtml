@@ -1,0 +1,68 @@
+﻿@model Lesson
+
+@{
+    var l = ViewData["topics"];
+}
+
+<form id="fmNotes" class="form-horizontal" role="form">
+    <hr />
+    <div class="form-group row">
+        <label class="control-label col-3"
+               style="text-align:left">Module Id:</label>
+        <input readonly="readonly" asp-for="@Model.ModuleId" id="txtLessonModuleId"
+               class="form-control-plaintext no-border col-2" style="border: 0" />
+
+        <label class="col-offset-1 control-label col-2"
+               style="text-align:left">Lesson:</label>
+        <input readonly="readonly" asp-for="@Model.LessonId" id="txtLessonId"
+               class="form-control-plaintext col-1" style="border: 0" />
+    </div>
+
+    <div class="form-group row">
+        <label class="control-label col-3"
+               style="text-align:left">Module Name:</label>
+        <input readonly="readonly" asp-for="@Model.Module.Name"
+               class="form-control-plaintext col-6" style="border: 0; text-align:left" />
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-3"
+               style="text-align:left">Attachments:</label>
+        <div class="btn-group col-6">
+            @if (Model.Attachments == null || Model.Attachments.Equals(""))
+            {
+                <input readonly="readonly" value="No"
+                       class="form-control-plaintext no-border" />
+            }
+            else
+            {
+                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewAttachmentsModal" onclick="return LoadAttachments()">Yes</button>
+            }
+            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#newAttachmentModal">Add Attachment</button>
+        </div>
+    </div>
+
+    <hr />
+    <div class="form-group row">
+        <label class="control-label col-3"
+               style="text-align:left">Topic:</label>
+
+        <select asp-for="@Model.TopicId" id="ddlLessonTopics"
+                asp-items="@((SelectList)ViewData["topics"])"
+                class="form-control-plaintext col-6">
+            <option value="">-- SELECT --</option>
+        </select>
+    </div>
+
+    <div class="form-group row">
+        <label class="control-label col-1" style="text-align:left">Notes:</label>
+        <div class="control-label col-5">
+            @{
+                // TODO Lesson12 Solution Task: Insert 2 hyperlinks to link to the simple voice recorder and sound transcriber, use target="_blank" so that a new tab is opened
+            }
+        </div>
+        <textarea asp-for="@Model.Notes" class="form-control" rows="15"></textarea>
+    </div>
+</form>
+
+
+

@@ -1,0 +1,42 @@
+﻿@model Client
+
+@{
+    ViewData["Title"] = "New Client";
+}
+@section ScriptSection{
+
+    <script>
+        $(document).ready(function () {
+            $("form").submit(function () {
+                if ($(this).valid()) {
+                    if (confirm("proceed? click OK to confirm.") == false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    };
+                }
+            });
+        });
+
+
+    </script>
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+<div class="row">
+    <div class="col-sm-6">
+        <form asp-controller="Client" asp-action="Create" method="post" class="form-horizontal" role="form">
+            <div class="form-horizontal">
+                <partial name="_Client" />
+                <div class="form-group row">
+                    <div class="col-sm-offset-3 col-sm-10">
+                        <input type="submit" value="Submit" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- 19047572 konada obadiah nahshon-->

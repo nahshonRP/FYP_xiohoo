@@ -1,0 +1,39 @@
+﻿@model MugOrder
+
+@{
+    ViewBag.Title = "New Mug Order";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="container">
+    <div class="col-6">
+        <form asp-controller="MugOrder" asp-action="Create" method="post" class="form-horizontal" role="form">
+            <div class="form-horizontal">
+                <div class="form-group row">
+                    @{ // TODO Lesson03 2-2: Bind the label and inputs to the property Color
+                    }
+                    <label class="col-2 control-label text-right" asp-for="Color"></label>
+                    <div class="col-7">
+                        <input type="radio" value="white" checked="checked" asp-for="Color" /> White
+                        <input type="radio" value="silver" asp-for="Color" /> Silver
+                    </div>
+                </div>
+                <div class="form-group row">
+                    @{ // TODO Lesson03 2-3: Bind the label and input to the property Qty
+                    }
+                    <label class="col-2 control-label text-right" asp-for="Qty"></label>
+                    <div class="col-6">
+                        <input class="form-control" asp-for="Qty" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-offset-2 col-10">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--19047572 Konada Obadiah Nahshon -->

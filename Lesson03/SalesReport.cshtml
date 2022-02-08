@@ -1,0 +1,118 @@
+﻿@{
+    var mugOrders = ViewData["mugOrders"] as List<MugOrder>;
+    var shirtOrders = ViewData["shirtOrders"] as List<ShirtOrder>;
+    var users = ViewData["users"] as List<AppUser>;
+
+}
+<div class="row">
+    <h2>Sales Report</h2>
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Step1">Sales Report 1: Union both mug and shirt orders</a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Step2">Sales Report 2: Group and sorted by CreatedBy, ProductType showing total quantity </a></li>
+
+    </ul>
+
+    <div class="tab-content" style="margin-top:10px">
+        <div id="Step1" class="tab-pane fade in active">
+            <div>
+                @{
+                    // to be implemented
+                    var sequence1 = mugOrders.Select(mo => new
+                    {
+                        ProductType = "Mug",
+                        Qty = mo.Qty,
+                        CreatedBy = mo.CreatedBy
+                    }).ToList();// This line needs to be changed
+
+                    var sequence2 = shirtOrders.Select(so => new
+                    {
+                        ProductType = "Shirt",
+                        Qty = so.Qty,
+                        CreatedBy = so.CreatedBy,
+                    }).ToList(); // This line needs to be changed
+
+                    var unionSeq = sequence1.Union(sequence2).ToList(); // This line needs to be changed. Union sequence1 and sequence2
+                }
+                <table class="table table-bordered table-condensed table-hover table-striped">
+                    <tr>
+                        <th class="col-1" width="20%">ProductType</th>
+                        <th class="col-1" width="20%">Qty</th>
+                        <th class="col-1" width="20%">CreatedBy</th>
+                    </tr>
+                    @foreach (var r in unionSeq)
+                    {
+                        <tr>
+                            <td class="col-1" width="20%">@r.ProductType</td>
+                            <td class="col-1" width="20%">@r.Qty</td>
+                            <td class="col-1" width="20%">@r.CreatedBy</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <div id="Step2" class="tab-pane fade">
+            @{
+                var groupedResult = unionSeq.GroupBy(us =>
+                 new { us.CreatedBy, us.ProductType })
+                     .Select(g =>
+                 new
+                 {
+                     UserId = g.Key.CreatedBy,
+                     ProductType = g.Key.ProductType,
+                     TotalQty = g.Sum(us => us.Qty)
+                 })
+                     .OrderBy(r => r.UserId)
+                     .ThenBy(r => r.ProductType)
+                     .ToList(); // This line needs to be changed. Grouped by multiple columns
+
+            }
+            <div>
+                <table class="table table-bordered table-condensed table-hover table-striped">
+                    <tr>
+                        <th class="col-1" width="20%">UserId</th>
+                        <th class="col-1" width="20%">ProductType</th>
+                        <th class="col-1" width="20%">TotalQty</th>
+                    </tr>
+                    @foreach (var r in groupedResult)
+                    {
+                        <tr>
+                            <td class="col-1" width="20%">@r.UserId</td>
+                            <td class="col-1" width="20%">@r.ProductType</td>
+                            <td class="col-1" width="20%">@r.TotalQty</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <div id="FinalStep" class="tab-pane fade">
+            <div>
+                @{
+                    var summary = groupedResult.Join(users, gr => gr.UserId,
+                        u => u.Id, (gr, u) => new
+                        {
+                            User = u.Name,
+                            ProductType = gr.ProductType,
+                            TotalQty = gr.TotalQty
+                        });
+                }
+                <table class="table table-bordered table-condensed table-hover table-striped">
+                    <tr>
+                        <th class="col-1" width="20%">User</th>
+                        <th class="col-1" width="20%">ProductType</th>
+                        <th class="col-1" width="20%">TotalQty</th>
+                    </tr>
+                    @foreach (var r in summary)
+                    {
+                        <tr>
+                            <td class="col-1" width="20%">@r.User</td>
+                            <td class="col-1" width="20%">@r.ProductType</td>
+                            <td class="col-1" width="20%">@r.TotalQty</td>
+
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 19047572 Konada Obadiah Nahshon-->

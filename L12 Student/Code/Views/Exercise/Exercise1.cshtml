@@ -1,0 +1,36 @@
+﻿@{ 
+// TODO Lesson12 Task 1-1 Make sure your form's encoding type is "multipart/form-data"
+}
+<form asp-controller="Exercise" 
+      asp-action="Exercise1" 
+      class="form-horizontal ">
+    <div class="form-group">
+        <h3 class="control-label.text-left col-offset-2 col-10">Exercise 1: Upload picture</h3>
+        @if (TempData["Msg"] != null)
+        {
+            <span style="color:red">@TempData["Msg"]</span><br />
+        }
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-2" for="picture">Picture:</label>
+        <div class="col-10">
+            @{ 
+                // TODO Lesson12 Task 1-2 Add an file type input element below
+                // Make sure the name of the this input element is picture
+                // The element should only accept files with extension .png
+            }
+
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-offset-2 col-10">
+            <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+    </div>
+</form>
+
+<div class="col-offset-2 col-10">
+    <img src="/exercise1/picture.png" alt="No picture uploaded" />
+</div>
+

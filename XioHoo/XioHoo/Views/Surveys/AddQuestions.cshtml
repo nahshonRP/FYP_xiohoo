@@ -1,0 +1,73 @@
+﻿@model CourseMangement.Models.ViewModels.SurveyQuestionsViewModel
+@{
+    ViewData["Title"] = "AddQuestions";
+}
+
+<h1>AddQuestions</h1>
+<section>
+
+
+    <div class="row col-md-12" style="margin-top:20px">
+        @if (ViewData["Error"] != null)
+        {
+            <span class="alert alert-danger">@ViewData["Error"]</span>
+        }
+        @if (ViewData["Message"] != null)
+        {
+            <span class="alert alert-success">@ViewData["Message"]</span>
+        }
+        <form asp-action="AddQuestions">
+            <input asp-for="FkSurveyId" type="hidden" />
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">Survey ID</label>
+                    <input asp-for="Survey.Id" disabled />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Survey details</label>
+                    <input asp-for="Survey.Name" disabled />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Added Date</label>
+                    <input value="@Model.Survey.DateCreated.ToString("dd MMM yyyy")" disabled />
+                </div>
+            </div>
+           
+
+
+
+                <table border="1" class="table ml-10" cellpadding="6">
+                    <tr>
+                        <th>Question ID</th>
+                        <th>Question Name</th>
+                        <th>Selected</th>
+                    </tr>
+                    @for (int i = 0; i < Model.Questions.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Html.TextBox("Questions[" + @i + "].Id",
+                                          Model.Questions[i].Id,
+                                          new { @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @Model.Questions[i].Name
+                            </td>
+                            <td>
+                                @Html.CheckBox("Questions[" + @i + "].Selected",
+                                          Model.Questions[i].Selected)
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="4">
+                            <input type="submit" class="btn btn-outline-success" value="Add Question" />
+                        </td>
+                    </tr>
+                </table>
+
+
+           
+        </form>
+    </div>
+</section>

@@ -1,0 +1,204 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CourseMangement.Models;
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var currentuser = await UserManager.GetUserAsync(User);
+    var name = "";
+    var rolename = "";
+    var userid = 0;
+    var roles = new List<string>();
+    if (currentuser != null)
+    {
+        name = currentuser.FullName;
+        rolename = currentuser.RoleName;
+        userid = currentuser.Id;
+        var ilist = await UserManager.GetRolesAsync(currentuser);
+        roles = ilist.ToList();
+
+    }
+
+    var issignin = SignInManager.IsSignedIn(User);
+
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>@ViewData["Title"] - Welcome </title> 
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <link href="~/LoanUI/assets/img/iconn.png" rel="icon">
+
+   
+   
+    <link href="~/LoanUI/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/LoanUI/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <link href="~/LoanUI/assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="~/LoanUI/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="~/LoanUI/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <link href="~/LoanUI/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+
+    <!-- Template Main CSS File -->
+    <link href="~/LoanUI/assets/css/style.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+
+    <header id="header" class="header fixed-top">
+        <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+
+            <a href="/" class="logo d-flex align-items-center">
+                <img src="~/LoanUI/assets/img/iconn.png" alt="">
+                <span>XioHoo</span>
+            </a>
+
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a class="nav-link scrollto " href="/">Home</a></li>
+
+                    @if (issignin)
+                    {
+
+
+
+                        @if (roles.Contains("ADMIN"))
+                        {
+                            <li><a class="nav-link scrollto " href="/users/profile/@userid">Account</a></li>
+                            <li><a class="nav-link scrollto " href="/users">Users</a></li>
+                            
+
+                            <li class="dropdown">
+                                <a href="#"><span>Course</span> <i class="bi bi-chevron-down"></i></a>
+                                <ul>
+
+                                    <li><a href="/cources">Courses</a></li>
+                                    <li><a href="/CourseCategories">Course Category</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="nav-link scrollto" href="/questions">Question</a></li>
+                            <li><a class="nav-link scrollto" href="/surveys">Survey</a></li>
+                        }
+                        else if (rolename.Contains("PARTICIPANT") || rolename.Contains("TRAINER"))
+                        {
+                            <li><a class="nav-link scrollto " href="/users/profile/@userid">Account</a></li>
+
+                            <li class="dropdown">
+                                <a href="#"><span>Course</span> <i class="bi bi-chevron-down"></i></a>
+                                <ul>
+
+                                    <li><a href="/cources/browse">Browse Course</a></li>
+                                    <li><a href="/cources/assigned/@userid">Assigned Courses</a></li>
+                                </ul>
+                            </li>
+                        }
+                        <li><a class="getstarted scrollto" href="/Account/SignOut">Sign Out</a></li>
+                    }
+
+
+
+                    else
+                    {
+                        <li><a href="/cources/browse">Browse Course</a></li>
+                        <li><a class="getstarted scrollto" href="/Account/Login">Sign In</a></li>
+                    }
+
+               
+
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
+            </nav>
+
+        </div>
+    </header>
+
+    <main id="main">
+
+        
+        <section class="inner-page">
+            <div class="container-fluid" style="margin-top:30px">
+                @RenderBody()
+            </div>
+        </section>
+
+    </main>
+   
+    <footer id="footer" class="footer">
+
+
+        <div class="footer-top">
+            <div class="container">
+                <div class="row gy-4">
+                    <div class="col-lg-5 col-md-12 footer-info">
+                        <a href="/" class="logo d-flex align-items-center">
+                            <img src="~/LoanUI/assets/img/logo.png" alt="">
+                            <span>Learn With XIOHOO</span>
+                        </a>
+                        <p>In this digital economy & society, it is important for everyone to learn digital and technology skills to enjoy greater convenience in their daily lives. XIOHOO offers affordable tech training programs for Seniors and Kids. Through our interactive & practical programs, we make learning tech fun and enjoyable!</p>
+                        <div class="social-links mt-3">
+                            <!--<a href="#" class="twitter"><i class="bi bi-twitter"></i></a>-->
+                            <a href="https://www.facebook.com/xiohoo/" class="facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="https://www.instagram.com/xiohoo/" class="instagram"><i class="bi bi-instagram bx bxl-instagram"></i></a>
+                            <a href="https://www.linkedin.com/company/xiohoo/about/" class="linkedin"><i class="bi bi-linkedin bx bxl-linkedin"></i></a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="copyright">
+                &copy; Copyright <strong><span>RP & XIOHOO</span></strong>. All Rights Reserved
+               
+            </div>
+            
+            
+        </div>
+    </footer>
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+    <script src="~/LoanUI/assets/vendor/aos/aos.js"></script>
+    <script src="~/LoanUI/assets/vendor/php-email-form/validate.js"></script>
+    <script src="~/LoanUI/assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="~/LoanUI/assets/vendor/purecounter/purecounter.js"></script>
+    <script src="~/LoanUI/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="~/LoanUI/assets/vendor/glightbox/js/glightbox.min.js"></script>
+
+
+    <!-- Template Main JS File -->
+    <script src="~/LoanUI/assets/js/main.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>
+
+
+

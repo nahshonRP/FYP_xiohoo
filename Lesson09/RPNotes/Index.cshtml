@@ -1,0 +1,101 @@
+﻿@model List<Module>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section ScriptSection {
+    <script>
+        @{
+            // TODO Lesson09 Solution Task: Complete LoadModules function to load the result of /RPNotes/GetModules action into div with id divNotes
+        }
+        function LoadModules() {
+            var url = "/RPNotes/GetModules";
+
+        }
+
+        @{
+            // TODO Lesson09 Solution Task: Complete LoadNotes function to call /api/RPNotes/{moduleId}/{lessonId} Web API action and update appropriate elements in the view
+        }
+        function LoadNotes(moduleId, lessonId) {
+            var url = "/api/RPNotes/" + moduleId + "/" + lessonId;
+            $.getJSON(url, function (lesson) {
+
+            });
+        }
+
+        @{
+            // TODO Lesson09 Solution Task: Complete AddNewModule function to call /api/RPNotes/NewModule/{moduleId}/{moduleName} Web API action to add new module
+            // Subtasks:
+            //      1. Display pop-up messages appropriately:
+            //          if 1 is returned displays "New module added!"
+            //          if 0 is returned displays "Failed to update new module!"
+            //          if -1 is returned displays "Module id already exists!"
+            //      2. If new module is added successfully, close the add new module dialog automatically. Use the following code to close:
+            //              $("#newModuleModal").modal("hide");
+            //      3. If new module is added successfully, call LoadModules function to refresh the list of modules so that new module will appear
+        }
+        function AddNewModule() {
+            var newModuleId = $("#txtNewModuleId").val();
+            var newModuleName = $("#txtNewModuleName").val();
+            var url = "/api/RPNotes/NewModule/" + newModuleId + "/" + newModuleName;
+
+            $.getJSON(url, function (result) {
+
+            });
+        }
+
+        $(document).ready(function () {
+            $("#btnNewModule").click(AddNewModule);
+        @if (TempData["Msg"] != null)
+        {
+            <text>alert('@TempData["Msg"]');</text>
+        }
+        })
+    </script>
+}
+
+<div class="col-2">
+    <img src="~/images/logo.png" style="width:100%" /><br /><br />
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#newModuleModal">New Module</button>
+    <div class="modal fade" id="newModuleModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add New Module</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="control-label col-3"
+                               style="text-align:left">Module Id:</label>
+                        <input id="txtNewModuleId"
+                               class="form-control-input col-3" />
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-3"
+                               style="text-align:left">Module Name:</label>
+                        <input id="txtNewModuleName"
+                               class="form-control-input col-8" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnNewModule" type="button" class="btn btn-default">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="divNavigation" class="pre-scrollable" style="width:150px;height:75vh;text-align:left">
+        <ul style="list-style-type:none;margin:0;padding:0">
+            <partial name="_ModulesNav" model="Model" />
+        </ul>
+    </div>
+</div>
+
+<div class="col-8">
+    <partial name="_Note" model="Model[0].Lesson.ToList()[0]" />
+</div>
+<!--Konada Obadiah Nahshon 19047572-->

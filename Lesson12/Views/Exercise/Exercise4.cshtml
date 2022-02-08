@@ -1,0 +1,53 @@
+﻿@section ScriptSection {
+    <script>
+        function uploadWAVFile() {
+            var form = $("#fmSound").get(0);
+            var fileinput = $("#sound").get(0);
+            var formdata = false;
+            if (window.FormData) {
+                formdata = new FormData(form);
+            }
+
+            $.ajax({
+                url: "/api/Azure/SpeechToText",
+                type: 'POST',
+                data: formdata,
+                success: function (data) {
+                    if (data == 0)
+                        alert("WAV file upload failed!")
+                    else {
+                        $("#taText").val(data);
+                    }
+                },
+                contentType: false,
+                processData: false
+            });
+        }
+
+        $(document).ready(function () {
+            $("#btnUploadWAV").click(uploadWAVFile);
+        });
+    </script>
+}
+<form enctype="multipart/form-data" id="fmSound" class="form-horizontal ">
+    <div class="form-group">
+        <h3 class="control-label.text-left col-offset-2 col-10">Exercise 4: Transcribe sound file</h3>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-2" for="sound">WAV file:</label>
+        <div class="col-10">
+            <input type="file" class="form-control" id="sound" name="sound" accept=".wav">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-offset-2 col-10">
+            <button id="btnUploadWAV" type="button" class="btn btn-default">Submit</button>
+        </div>
+    </div>
+</form>
+
+<div class="col-offset-2 col-10">
+    <textarea id="taText" rows="10" cols="100"></textarea>
+</div>
+

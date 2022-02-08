@@ -1,0 +1,219 @@
+﻿@model List<Module>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section ScriptSection {
+    <script>
+        function UpdateNotes() {
+            var url = "/api/RPNotes/Save";
+            $.post(url,
+                $("#fmNotes").serialize(),
+                function (result) {
+                    if (result == -2)
+                        alert("Invalid input!");
+                    else if (result == -1)
+                        alert("Lesson not found!");
+                    else if (result == 0)
+                        alert("Failed to update database!")
+                    else
+                        alert("Notes successfully updated!");
+                }, "json"
+            );
+        }
+
+        function LoadModulesForTopic() {
+            var url = "/api/RPNotes/Modules";
+            var ddlModuleId = $("#ddlNewTopicModuleId");
+
+            ddlModuleId.html("");
+            $.getJSON(url, function (result) {
+                $.each(result, function (i, item) {
+                    ddlModuleId.append("<option value='" + item.moduleId + "'>" + item.moduleId + " - " + item.name + "</option>");
+                });
+            });
+        }
+
+        function LoadModules() {
+            var url = "/RPNotes/GetModules";
+            $("#divNavigation").load(url);
+        }
+
+        function LoadNotes(moduleId, lessonId) {
+            var url = "/RPNotes/GetNotes?moduleId=" + moduleId + "&lessonId=" + lessonId;
+            $("#divNotes").load(url);
+        }
+
+        function AddNewModule() {
+            var newModuleId = $("#txtNewModuleId").val();
+            var newModuleName = $("#txtNewModuleName").val();
+            var url = "/api/RPNotes/NewModule/" + newModuleId + "/" + newModuleName;
+
+            $.getJSON(url, function (result) {
+                if (result == 1) {
+                    alert("New module added!");
+                    $("#newModuleModal").modal("hide");
+                    LoadModules();
+                }
+                else if (result == 0)
+                    alert("Failed to update new module!")
+                else
+                    alert("Module id already exists!");
+            });
+        }
+
+        function AddNewTopic() {
+            var newModuleId = $("#ddlNewTopicModuleId").val();
+            var newTopicId = $("#txtNewTopicId").val();
+            var newTopicTitle = $("#txtNewTopicTitle").val();
+            var url = "/api/RPNotes/NewTopic/" + newModuleId + "/" + newTopicId + "/" + newTopicTitle;
+            alert(url);
+
+            $.getJSON(url, function (result) {
+                if (result == 1) {
+                    alert("New topic added!");
+                    $("#newTopicModal").modal("hide");
+                }
+                else if (result == 0)
+                    alert("Failed to add new topic!")
+                else
+                    alert("Topic id already exists!");
+            });
+        }
+
+        function UploadNewTopic() {
+            var url = "/api/RPNotes/NewTopic";
+
+            $.post(url, $("#fmNewTopic").serialize(), function (result) {
+                if (result == 1) {
+                    alert("New topic added!");
+                    $("#newTopicModal").modal("hide");
+                }
+                else if (result == 0)
+                    alert("Failed to add new topic!");
+            }, "json");
+        }
+
+        @{
+            // TODO Lesson11 Solution Task: Complete LoadWeatherForecast function to call the weather forecast web api you have worked on during exercises and update the trWeatherForecase table row element accordingly
+        }
+        function LoadWeatherForecast() {
+            var url = "/api/Ex/Weather/1.4428559/103.7856195";
+
+        var trWeatherForecast = $("#trWeatherForecast");
+            trWeatherForecast.html("");
+            $.getJSON(url, function (result) {
+                $.each(result, function (i, item) {
+                    var src = "/weather_images/" + item.icon;
+                    trWeatherForecast.append("<td>" + item.date + "<br/><img src='" + src + "'/><br/>" + item.max_c + "°C &ensp; <small>" + item.min_c + "°C</small></td>");
+                });
+            });
+        };
+
+        $(document).ready(function () {
+            $("#btnSaveNotes").click(UpdateNotes);
+            $("#btnNewModule").click(AddNewModule);
+            $("#btnShowNewTopic").click(function () {
+                LoadModulesForTopic();
+                $("#txtNewTopicId").val("");
+                $("#txtNewTopicTitle").val("");
+            });
+            $("#btnNewTopic").click(UploadNewTopic);
+
+            LoadWeatherForecast();
+        })
+    </script>
+}
+
+<div class="col-sm-3">
+    <img src="~/images/logo.png" width="300" /><br /><br />
+    <div style="margin:5px">
+        <button type="button" class="btn btn-success col-12" data-toggle="modal" data-target="#newTopicModal" id="btnShowNewTopic">New Topic</button>
+    </div>
+    <div class="modal fade" id="newTopicModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add New Topic</h4>
+                </div>
+                <div class="modal-body">
+                    <partial name="_Topic" model="new Topic()" />
+                </div>
+                <div class="modal-footer">
+                    <button id="btnNewTopic" type="button" class="btn btn-default">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="margin:5px">
+        <button type="button" class="btn btn-info col-12" data-toggle="modal" data-target="#newModuleModal">New Module</button>
+    </div>
+    <div class="modal fade" id="newModuleModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add New Module</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="control-label col-3"
+                               style="text-align:left">Module Id:</label>
+                        <input id="txtNewModuleId"
+                               class="form-control-input col-3" />
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-3"
+                               style="text-align:left">Module Name:</label>
+                        <input id="txtNewModuleName"
+                               class="form-control-input col-8" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnNewModule" type="button" class="btn btn-default">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divNavigation" class="pre-scrollable col-12" style="width:300px;height:75vh;text-align:left">
+        <ul style="list-style-type:none;margin:0;padding:0">
+            @if (ViewData["byTopic"] == null)
+            {
+                <partial name="_ModulesNav" model="Model" />
+            }
+            else
+            {
+                <partial name="_TopicsNav" model="Model" />
+            }
+        </ul>
+    </div>
+</div>
+<div class="col-sm-9">
+    <hr />
+    <div class="row">
+        <table style="margin: 0 auto;width:100%">
+            <tr><td colspan="5" style="text-align:center"><h4>Plan Your Days Well</h4></td></tr>
+            <tr id="trWeatherForecast" style="text-align:center"></tr>
+        </table>
+    </div>
+
+    <div id="divNotes">
+        @if (Model.Count > 0 && Model[0].Lesson.ToList().Count > 0)
+        {
+            <partial name="_Note" model="Model[0].Lesson.ToList()[0]" />
+        }
+        else
+        {
+            <partial name="_Note" model="new Lesson();" />
+        }
+    </div>
+    <div class="col-offset-5 col-10">
+        <button id="btnSaveNotes" class="btn btn-primary">Save</button>
+    </div>
+</div>
+<!--19047572 Konada Obadiah Nahshon-->

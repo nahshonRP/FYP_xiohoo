@@ -1,0 +1,87 @@
+﻿@model CourseMangement.Models.ViewModels.CourseAttendanceViewModel
+@using Microsoft.AspNetCore.Identity
+@using CourseMangement.Models;
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var currentuser = await UserManager.GetUserAsync(User);
+    var name = "";
+    var rolename = "";
+    var userid = 0;
+    var roles = new List<string>();
+    if (currentuser != null)
+    {
+        name = currentuser.FullName;
+        rolename = currentuser.RoleName;
+        userid = currentuser.Id;
+        var ilist = await UserManager.GetRolesAsync(currentuser);
+        roles = ilist.ToList();
+
+    }
+
+    var issignin = SignInManager.IsSignedIn(User);
+
+}
+
+
+@{
+    ViewData["Title"] = "AddQuestions";
+}
+
+<h1>Attendance</h1>
+<section>
+
+
+    <div class="row col-md-12" style="margin-top:20px">
+
+        <form asp-action="Attendance">
+            <input asp-for="FkCourseId" type="hidden" />
+            <div class="row" style="padding:15px">
+                <div class="col-md-3">
+                    <label class="form-label">Course ID</label>
+                    <input asp-for="FkCourseId" disabled />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Course Name</label>
+                    <input asp-for="Course.Name" disabled />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Course Date</label>
+                    <input value="@Model.Course.CourseDate.ToString("dd MMM yyyy")" disabled />
+                </div>
+            </div>
+
+
+
+
+            <table border="1" class="table ml-10" cellpadding="6">
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>User Name</th>
+                    <th>Present</th>
+                </tr>
+                @for (int i = 0; i < Model.Users.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            @Model.Users[i].Id
+                        </td>
+                        <td>
+                            @Model.Users[i].FullName
+                        </td>
+                        <td>
+                            @Model.Users[i].UserName
+                        </td>
+                        <td>
+                            Confused, present status should be created
+                        </td>
+                        
+                    </tr>
+                }
+               
+            </table>
+        </form>
+    </div>
+</section>
+

@@ -1,0 +1,67 @@
+﻿@model CakeOrder
+@{
+    ViewData["Title"] = "New Cake Order";
+}
+@section ScriptSection {
+    <script>
+        function SetCakeColor() {
+            var selectedColor = $(this).val();
+            $("#imgCake").css("background-color", selectedColor);
+        };
+        function SetPokemon() {
+            var pokeid = $(this).val();
+            var newsrc = "/images/" + pokeid + "-200.png";
+            $("#imgPoke").attr("src", newsrc);
+        }
+        function CalcSubtotal() {
+            var qty = $("#txtQty").val();
+            var price = 30.00;
+            var subtotal = qty * price;
+            $("#txtSubtotal").val(subtotal.toFixed(2));
+        }
+        $(document).ready(function () {
+            $("#rdFlavor1").change(SetCakeColor);
+            $("#rdFlavor2").change(SetCakeColor);
+            $("#rdFlavor3").change(SetCakeColor);
+            $("#ddlPoke").change(SetPokemon);
+            $("#txtQty").change(CalcSubtotal);
+            $("#Greeting").on("input", function () {
+                $("#divGreet").text($("#Greeting").val());
+            });
+            $("form").submit(function () {
+                if (confirm("click ok to confirm!") == false) {
+                    event.preventDefault(); 
+                    event.stopPropagation(); 
+                    return false; 
+                };
+            });
+        });
+    </script>
+}
+<h2>@ViewData["Title"]</h2>
+<div class="row">
+    <div class="col-sm-6">
+        <form asp-controller="CakeOrder" asp-action="Create" method="post" class="form-horizontal" role="form">
+            <div class="form-horizontal">
+                <partial name="_CakeOrder" />
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Subtotal: </label>
+                    <div class="col-sm-6" style="padding-right:15px">
+                        <input id="txtSubtotal" class="form-control" readonly="readonly" value="0" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-10">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="divPreview" class="col-sm-6">
+        <img id="imgCake" src="~/images/cake.png" style="position:absolute;left:0;top:0;width:300px;height:300px;" />
+        <img id="imgPoke" src="~/images/0-200.png" style="position:absolute;left:140px;top:10px;height:180px;width:180px" />
+        <div id="divGreet" style="position:absolute;right:170px;top:160px;height:80px;width:80px"></div>
+    </div>
+</div>
+<!-- 19047572 Konada Obadiah Nahshon-->

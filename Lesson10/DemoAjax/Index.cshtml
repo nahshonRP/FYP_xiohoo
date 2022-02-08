@@ -1,0 +1,237 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Demo Ajax Call</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script>
+        $.ajaxSetup({ cache: false });
+    </script>
+    <script>
+        function clearProducts() {
+            $("#ddlProductId").html("");
+        }
+
+        @{
+            // TODO P10 Task 1-2 Complete this function to populate ddlProductId
+            // The first item should be <option value=''>-- SELECT --</option>
+        }
+        function loadProducts() {
+            var ddlProductId = $("#ddlProductId");
+            var apiUrl = "/api/Sales";
+
+            ddlProductId.html("<option value=''>-- SELECT --</option>");
+            $.getJSON(apiUrl, function (result) {
+                $.each(result, function (i, item) {
+                    ddlProductId.append("<option value='" + item.ddlProductId + "'>"
+                        + item.ddlProductId + " - "
+                        + item.productName + "</option>")
+                });
+            });
+        }
+
+        function clearTotalAmount() {
+            $("#txtTotalAmount").val("");
+        }
+
+        @{
+            // TODO P10 Task 1-4 Complete this function to calculate the total and update the txtTotalAmount
+        }
+        function calcTotalAmount() {
+            var ddlProductId = $("#ddlProductId");
+            var apiUrl = "/api/Sales/Amount";
+            var txtTotalAmount = $("#txtTotalAmount");
+
+            txtTotalAmount.val("");
+            $.getJSON(apiUrl, function (result) {
+                var total = 0;
+                $.each(result, function (i, amt) {
+                    total += amt;
+                    txtTotalAmount.val(total);
+                });
+            });
+
+        }
+
+        function clearCustomers() {
+            $("#ddlCustomerId").html("");
+        }
+
+        @{
+            // TODO P10 Task 1-6 Complete this function to populate ddlCustomerId
+            // The first item should be <option value=''>-- SELECT --</option>
+        }
+        function loadCustomers() {
+            var ddlCustomerId = $("ddlCustomerId");
+            var apiUrl = "/api/Sales/Customer";
+
+            ddlCustomerId.html("<option value = '' > -- SELECT -- </option>");
+            $.getJSON(apiUrl, function (result) {
+                $.each(result, function (i, item) {
+                    ddlCustomerId.append("<option value=' " + item.id + "'>" + item.name + "</option>")
+                });
+            });
+        }
+
+        @{
+            // TODO P10 Task 1-8 Complete this function to populate tbOrders table body
+            // tbOrders should be initialized to empty content before calling the web api
+        }
+        function loadCustomerOrders() {
+            var tbOrders = $("#tbOrders");
+            var custId = $("#ddlCustomerId").val();
+            var apiUrl = "/api/Sales/Customer/" + custId + "/Order";
+
+            tbOrders.html("");
+            $.getJSON(apiUrl, function (result) {
+                $.each(result, function (i, item) {
+                    tbOrders.append("<tr><td>"
+                        + item.id + "</td><td>"
+                        + item.productId + "</td><td>"
+                        + item.productName + "</td><td>"
+                        + item.price + "</td><td>"
+                        + item.qty + "</td><tr>")
+                });
+            });
+        }
+
+        @{
+            // TODO P10 Task 2-2 Complete this function to upload new customer to database
+            // Display messages as below:
+            //      If return 0 display 'Failed to add new customer!'
+            //      If return 1 display 'New customer added!'
+            //      If return -1 display 'Customer already exists!'
+        }
+        function uploadNewCustomer() {
+            var fmCustomer = $("#fmNewCustomer");
+            var apiUrl = "/api/Sales/Customer/Add";
+
+            $.post(apiUrl, $("#fmNewCustomer").serialize(), function (result) {
+                alert(result);
+                if (result == 0)
+                    alert("failed to add new customer");
+                else if (result == 1)
+                    alert("new customer has been added");
+                else if (result == -1)
+                    alert("customer already exists");
+            }, "json");
+        }
+
+
+        $(document).ready(function () {
+            $("#btnClearProducts").click(clearProducts);
+            $("#btnLoadProducts").click(loadProducts);
+
+            $("#btnClearTtlAmt").click(clearTotalAmount);
+            $("#btnCalcTtlAmt").click(calcTotalAmount);
+
+            $("#btnClearCustomers").click(clearCustomers);
+            $("#btnLoadCustomers").click(loadCustomers);
+
+            $("#ddlCustomerId").change(loadCustomerOrders);
+
+            $("#btnNewCustomer").click(uploadNewCustomer)
+		});
+    </script>
+</head>
+<body>
+    <table>
+        <tr>
+            <td>
+                <b>Ex 1: </b>
+            </td>
+            <td>
+                Product :
+            </td>
+            <td>
+                <select id="ddlProductId"></select>
+            </td>
+            <td>
+                <input type="button" value="Load" id="btnLoadProducts" />
+                <input type="button" value="Clear" id="btnClearProducts" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <hr />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>Ex 2: </b>
+            </td>
+            <td>
+                Total Amount Ordered :
+            </td>
+            <td>
+                <input type="text" id="txtTotalAmount" />
+            </td>
+            <td>
+                <input type="button" value="Calculate" id="btnCalcTtlAmt" />
+                <input type="button" value="Clear" id="btnClearTtlAmt" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <hr />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>Ex 3: </b>
+            </td>
+            <td>
+                Customer :
+            </td>
+            <td>
+                <select id="ddlCustomerId"></select>
+            </td>
+            <td>
+                <input type="button" value="Load Customers" id="btnLoadCustomers" />
+                <input type="button" value="Clear" id="btnClearCustomers" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="3">
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <td>Order Id</td>
+                            <td>Product Id</td>
+                            <td>Product Name</td>
+                            <td>Price</td>
+                            <td>Qty</td>
+                        </tr>
+                    </thead>
+                    <tbody id="tbOrders"></tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <hr />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>Ex 4: </b>
+            </td>
+            <td colspan="3">
+                @{
+                    Html.RenderPartial("_Customer");
+                }
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
+<!-- 19047572 Konada Obadiah Nahshon-->

@@ -1,0 +1,93 @@
+﻿@section ScriptSection {
+    <script src="~/lib/jquery/recorder.js"></script>
+
+    <script>
+        var record;
+        var stop;
+        var gumStream; //stream from getUserMedia()
+        var rec; //Recorder.js object
+        var input; //MediaStreamAudioSourceNode we'll be recording
+        // shim for AudioContext when it's not avb.
+        var AudioContext = window.AudioContext || window.webkitAudioContext;
+        var audioContext = new AudioContext; //new audio context to help us record
+
+        function createDownloadLink(blob) {
+
+            var url = URL.createObjectURL(blob);
+            var link = $("#lnkDownload").get(0);
+
+            //link the a element to the blob
+            link.href = url;
+            link.download = new Date().toISOString() + '.wav';
+            link.innerHTML = link.download;
+        }
+
+        function mediaSetup() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                console.log('getUserMedia supported.');
+                navigator.mediaDevices.getUserMedia(
+                    // constraints - only audio needed for this app
+                    {
+                        audio: true
+                    })
+
+                    // Success callback
+                    .then(function (stream) {
+                        /* assign to gumStream for later use */
+
+                        gumStream = stream;
+
+                        /* use the stream */
+                        input = audioContext.createMediaStreamSource(stream);
+
+                        /*
+                        Create the Recorder object and configure to record mono sound (1 channel)
+                        Recording 2 channels  will double the file size
+                        */
+                        rec = new Recorder(input, { numChannels: 1 })
+
+                        record = $("#btnStart");
+                        stop = $("#btnStop");
+
+                        record.click(function () {
+                            //start the recording process
+			    audioContext.resume();
+                            rec.record()
+                            record.hide();
+                            stop.show();
+                        });
+
+                        stop.click(function () {
+                            rec.stop();
+
+                            //stop microphone access
+                            gumStream.getAudioTracks()[0].stop();
+
+                            //create the wav blob and pass it on to createDownloadLink
+                            rec.exportWAV(createDownloadLink);
+                            stop.hide();
+                            record.show();
+                        });
+                    })
+
+                    // Error callback
+                    .catch(function (err) {
+                        console.log('The following getUserMedia error occured: ' + err);
+                    }
+                    );
+            } else {
+                console.log('getUserMedia not supported on your browser!');
+            }
+        }
+
+        $(document).ready(
+            function () {
+                mediaSetup();
+            }
+        );
+    </script>
+}
+<form class="form-horizontal">
+   <partial name="_SimpleRecorder" />
+</form>
+

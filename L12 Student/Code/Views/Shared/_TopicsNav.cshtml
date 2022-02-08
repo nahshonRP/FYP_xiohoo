@@ -1,0 +1,23 @@
+﻿@model List<Module>
+@foreach (Module m in Model)
+{
+    <li>
+        <button class="btn btn-link text-left" data-toggle="collapse" data-target="@String.Format("#{0}div",m.ModuleId)" style="text-align:left">@m.ModuleId</button>
+        <ul id="@String.Format("{0}div",m.ModuleId)" class="collapse" style="list-style-type:none;padding-left:20px">
+            @foreach (Topic t in m.Topic.ToList())
+            {
+                <li>
+                    <button class="btn btn-link text-left" data-toggle="collapse" data-target="@String.Format("#{0}div",t.TopicId.Replace(" ","").Replace("&",""))" style="text-align:left">@t.TopicId</button>
+                    <div id="@String.Format("{0}div",t.TopicId.Replace(" ","").Replace("&",""))" class="collapse">
+                        <div class="btn-group-vertical col-1">
+                            @foreach (Lesson l in t.Lesson.ToList())
+                            {
+                                <button class="btn btn-link" onclick="return LoadNotes('@l.ModuleId',@l.LessonId)">Lesson @l.LessonId</button>
+                            }
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </li>
+}

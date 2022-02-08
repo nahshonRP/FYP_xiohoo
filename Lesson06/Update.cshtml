@@ -1,0 +1,89 @@
+﻿@model CakeOrder
+
+@{
+    ViewBag.Title = "Update Cake Order";
+}
+
+@section ScriptSection {
+    <script>
+        function SetCakeColor() {
+            var flavor = $(this).val();
+            var selectedColor = flavor == "Vanilla" ? "white" : flavor == "Strawberry" ? "Pink" : "Chocolate";
+            $("#imgCake").css("background-color", selectedColor);
+        }
+        function SetPokemon() {
+            var pokeid = $(this).val();
+            var newsrc = "/images/" + pokeid + "-200.png";
+            $("#imgPoke").attr("src", newsrc);
+        }
+        function SetGreeting() {
+            var greeting = $(this).val();
+            $("#divGreet").html(greeting);
+        }
+        function CalcSubtotal() {
+            var qty = $("#txtQty").val();
+
+            var subtotal = qty * 30;
+            $("#txtSubtotal").val(subtotal.toFixed(2));
+        }
+        $(document).ready(function () {
+            $("#rdFlavor1").change(SetCakeColor);
+            $("#rdFlavor2").change(SetCakeColor);
+            $("#rdFlavor3").change(SetCakeColor);
+
+            $("#ddlPoke").change(SetPokemon);
+
+            $("#taGreeting").change(SetGreeting);
+
+            $("#txtQty").change(CalcSubtotal);
+            $("#txtPrice").change(CalcSubtotal);
+
+            $("#Greeting").on("input", function () {
+                $("#divGreet").text($("#Greeting").val());
+            });
+
+            $("form").submit(function () {
+                if (confirm("confirm to continue") == false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
+            });
+        });
+    </script>
+}
+<h2>@ViewData["Title"]</h2>
+<div class="row">
+    <div class="col-sm-7">
+        <form asp-controller="CakeOrder" asp-action="Update" method="post" class="form-horizontal" role="form">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label asp-for="Id" class="col-sm-4 control-label"></label>
+                    <div class="col-sm-6">
+                        <input asp-for="Id" class="form-control" readonly="readonly" />
+                    </div>
+                </div>
+                <partial name="_CakeOrder" />
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Subtotal: </label>
+                    <div class="col-sm-6" style="padding-right:15px">
+                        <input id="txtSubtotal" class="form-control" readonly="readonly" value="@String.Format("{0:0.00}",Model.Qty * 30)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-10">
+                        <input type="submit" value="Update" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="divPreview" class="col-sm-offset-1 col-sm-4">
+        <img id="imgCake" src="~/images/cake.png" style="position:absolute;left:0;top:0;width:480px;height:400px;background-color:@Model.Flavor" />
+        <img id="imgPoke" src="@String.Format("/images/{0}-200.png",Model.PokedexId)" style="position:absolute;left:300px;top:130px;height:130px;width:130px" />
+        <div id="divGreet" style="position:absolute;left:300px;top:180px;height:130px;width:130px">
+
+        </div>
+    </div>
+</div>
+<!-- 19047572 Konada Obadiah Nahshon-->

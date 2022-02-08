@@ -1,0 +1,141 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Demo Ajax Call</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="~/lib/scripts/jquery.min.js"></script>
+    <script>
+        $.ajaxSetup({ cache: false });
+    </script>
+    <script>
+        @{
+// TODO Lesson09 Task 3-1 Complete this function to update txtPrice value dynamically
+        }
+        function loadPrice() {
+            var productId = $("#ddlProductId").val();
+            var apiUrl = "/api/Sales/Price/" + productId;
+            var txtPrice = $("#txtPrice");
+
+
+            $.getJSON(apiUrl, function (result) {
+                txtPrice.val(result);
+            });
+        }
+
+        @{
+// TODO Lesson09 Task 3-2 Complete this function to update txtName value dynamically
+        }
+        function loadName() {
+            var productId = $("#ddlProductId").val();
+            var apiUrl = "/api/Sales/Name/" + productId;
+            var txtName = $("#txtName");
+
+
+            $.getJSON(apiUrl, function (result) {
+                txtName.val(result);
+            });
+        }
+
+        @{
+            // TODO Lesson09 Task 3-3 Complete this function to update divOrder value dynamically
+        }
+        function loadOrder() {
+            var productId = $("#ddlProductId").val();
+            var apiUrl = "/api/Sales/" + productId;
+            var divOrder = $("#divOrder");
+
+            $.getJSON(apiUrl, function (result) {
+                var msg = result.qty + " pieces of <br />" + result.productName + "[" + result.productId + "]<br /> sold at SGD" + result.price + " each";
+                divOrder.html(msg);
+            });
+        }
+
+        $(document).ready(function () {
+
+            $("#btnGetPrice").click(function () {
+                loadPrice();
+            });
+
+            $("#btnGetName").click(function () {
+                loadName();
+            });
+
+            $("#btnGetOrder").click(function () {
+                loadOrder();
+            });
+		});
+    </script>
+</head>
+<body>
+    <table>
+        <tr>
+            <td>
+                Product :
+            </td>
+            <td>
+                <select id="ddlProductId">
+                    <option value="CU686">CU686 - Copper earrings</option>
+                    <option value="ST0001">ST0001 - Silver bracelet</option>
+                    <option value="ST0032">ST0032 - Silver watch</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <hr />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Price :
+            </td>
+            <td>
+                <input type="text" id="txtPrice" />
+            </td>
+            <td>
+                <input type="button" value="Get Price" id="btnGetPrice" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <hr />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Product Name :
+            </td>
+            <td>
+                <input type="text" id="txtName" />
+            </td>
+            <td>
+                <input type="button" value="Get Name" id="btnGetName" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <hr />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="divOrder" style="border:solid">
+                    [Empty]
+                </div>
+            </td>
+            <td>
+                <input type="button" value="Get Order" id="btnGetOrder" />
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
+<!--Konada Obadiah Nahshon 19047572-->

@@ -1,0 +1,209 @@
+﻿@model List<Module>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section ScriptSection {
+    <script>
+         @{
+            //  TODO P10 Solution Task: Complete UpdateNotes function to call /api/RPNotes/Save Web API action to update notes
+            //  Display pop-up messages appropriately:
+            //      if 1 is returned displays "Notes successfully updated!"
+            //      if 0 is returned displays "Failed to update database!"
+            //      if -1 is returned displays "Lesson not found!"
+            //      if -2 is returned displays "Invalid input!"
+        }
+        function UpdateNotes() {
+            var url = "/api/RPNotes/Save";
+            $.post(url,
+                $("#fmNotes").serialize(),
+                function (result) {
+                    if (result == 0)
+                        alert("failed to update database!");
+                    else if (result == 1)
+                        alert("notes have been successfully updated!");
+                    else if (result == -1)
+                        alert("lesson has not been found!");
+                    else if (result == -2)
+                        alert("invalid input!")
+                }, "json");
+        }
+
+        // TODO P10 Solution Task: Implement LoadModulesForTopic action to call /api/RPNotes/Modules Web API action to populate the module list for adding new topic
+        function LoadModulesForTopic() {
+            var url = "/api/RPNotes/Modules"
+            var ddlModuleid = $("#ddlNewTopicModuleId");
+
+
+
+            ddlModuleid.html("<option selected='selected' value=''>-- SELECT --</option>");
+            $.getJSON(url, function (result) {
+                $.each(result, function (i, item) {
+                    ddlModuleid.append("<option value='" + item.moduleId + "'>" + item.moduleId + " - " + item.name + "</option>")
+                });
+            });
+        }
+
+        function LoadModules() {
+            var url = "/RPNotes/GetModules";
+            $("#divNavigation").load(url);
+        }
+
+        function LoadNotes(moduleId, lessonId) {
+            var url = "/RPNotes/GetNotes?moduleId=" + moduleId + "&lessonId=" + lessonId;
+            $("#divNotes").load(url);
+        }
+
+        function AddNewModule() {
+            var newModuleId = $("#txtNewModuleId").val();
+            var newModuleName = $("#txtNewModuleName").val();
+            var url = "/api/RPNotes/NewModule/" + newModuleId + "/" + newModuleName;
+
+
+
+            $.getJSON(url, function (result) {
+                if (result == 1) {
+                    alert("added new model!");
+                    $("#newModuleModal").modal("hide");
+                    LoadModules();
+                }
+                else if (result == 0)
+                    alert("unable to update new module!")
+                else
+                    alert("module id already exists!");
+            });
+        }
+
+        @{
+// TODO P10 Solution Task: Complete AddNewTopic function to call /api/RPNotes/NewTopic/{moduleId}/{topicId}/{topicTitle} Web API action to add new topic
+// Subtasks:
+//      1. Display pop-up messages appropriately:
+//          if 1 is returned displays "New topic added!"
+//          if 0 is returned displays "Failed to add new topic!"
+//          if -1 is returned displays "Topic id already exists!"
+//      2. If new topic is added successfully, close the add new topic dialog automatically. Use the following code to close:
+//              $("#newTopicModal").modal("hide");
+        }
+        function AddNewTopic() {
+            var newModuleId = $("#ddlNewTopicModuleId").val();
+            var newTopicId = $("#txtNewTopicId").val();
+            var newTopicTitle = $("#txtNewTopicTitle").val();
+
+            var url = "/api/RPNotes/NewTopic/" + newModuleId + "/" + newTopicId + "/" + newTopicTitle;
+            alert(url);
+
+$.getJSON(url, function (result) {
+                if (result == 1) {
+                    alert("New topic added");
+                    $("#newTopicModal").modal("hide");
+                }
+                else if (result == 0)
+                    alert("Failed to add new topic");
+                else
+                    alert("Topic id already exists");
+            });
+        }
+
+        $(document).ready(function () {
+            $("#btnSaveNotes").click(UpdateNotes);
+            $("#btnNewModule").click(AddNewModule);
+
+            $("#btnShowNewTopic").click(function () {
+                LoadModulesForTopic();
+                $("#txtNewTopicId").val("");
+                $("#txtNewTopicTitle").val("");
+            });
+            $("#btnNewTopic").click(AddNewTopic);
+        })
+    </script>
+}
+
+<div class="col-sm-2">
+    <img src="~/images/logo.png" style="width:100%" /><br /><br />
+    <div style="margin:5px">
+        <button type="button" class="btn btn-success col-sm-12" data-toggle="modal" data-target="#newTopicModal" id="btnShowNewTopic">New Topic</button>
+    </div>
+    <div class="modal fade" id="newTopicModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add New Topic</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="control-label col-sm-3"
+                               style="text-align:left">Module:</label>
+                        <select id="ddlNewTopicModuleId"
+                                class="form-control-input col-sm-8"></select>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-3"
+                               style="text-align:left">Topic Id:</label>
+                        <input id="txtNewTopicId"
+                               class="form-control-input col-sm-3" />
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-3"
+                               style="text-align:left">Title:</label>
+                        <input id="txtNewTopicTitle"
+                               class="form-control-input col-sm-8" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnNewTopic" type="button" class="btn btn-default">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="margin:5px">
+        <button type="button" class="btn btn-info col-sm-12" data-toggle="modal" data-target="#newModuleModal">New Module</button>
+    </div>
+    <div class="modal fade" id="newModuleModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add New Module</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="control-label col-sm-3"
+                               style="text-align:left">Module Id:</label>
+                        <input id="txtNewModuleId"
+                               class="form-control-input col-sm-3" />
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-sm-3"
+                               style="text-align:left">Module Name:</label>
+                        <input id="txtNewModuleName"
+                               class="form-control-input col-sm-8" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="btnNewModule" type="button" class="btn btn-default">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divNavigation" class="pre-scrollable" style="width:150px;height:75vh;text-align:left">
+        <ul style="list-style-type:none;margin:0;padding:0">
+            <partial name="_ModulesNav" model="Model" />
+        </ul>
+    </div>
+</div>
+
+<div class="col-sm-8">
+    <div id="divNotes">
+        <partial name="_Note" model="Model[0].Lesson.ToList()[0]" />
+    </div>
+    <div class="col-sm-offset-5 col-sm-10">
+        <button id="btnSaveNotes" class="btn btn-primary">Save</button>
+    </div>
+</div>
+<!-- 19047572 Konada Obadiah Nahshon-->

@@ -1,0 +1,83 @@
+﻿@model ShirtOrder
+
+@{
+    ViewBag.Title = "update shirt order";
+}
+
+<script>
+    function SetShirtColor() {
+        var selectedColor = $(this).val();
+        $("#imgShirt").css("background-color", selectedColor);
+    }
+
+    function SetPokemon() {
+        var pokeid = $(this).val();
+        var newsrc = "/images/" + pokeid + "-200.png";
+        $("#imgPokeFront").attr("src", newsrc);
+        $("#imgPokeBack").attr("src", newsrc);
+    }
+
+    function SetLogoPosition() {
+        var left = "60px";
+        var right = "130px";
+        var poslogo = $(this).val() == 0 ? left : right;
+        $("#imgPokeFront").css("left", poslogo);
+    }
+
+    $(document).ready(function () {
+
+        $("#rdColor1").change(SetShirtColor);
+        $("#rdColor2").change(SetShirtColor);
+        $("#rdColor3").change(SetShirtColor);
+        $("#rdColor4").change(SetShirtColor);
+
+        $("#ddlPoke").change(SetPokemon);
+
+        $("#rdPosLeft").change(SetLogoPosition);
+        $("#rdPosRight").change(SetLogoPosition);
+
+        $("form").submit(function () {
+            confirm("Proceed? Press OK to confirm");
+        });
+    });
+</script>
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-6">
+        <form asp-controller="ShirtOrder" asp-action="Update" method="post" class="form-horizontal" role="form">
+            <div class="form-horizontal">
+                <div class="form-group row">
+                    <label asp-for="Id" class="col-4 control-label text-sm-right"></label>
+                    <div class="col-6">
+                        <input asp-for="Id" class="form-control" readonly="readonly" />
+                    </div>
+                </div>
+
+                <partial name="_ShirtOrder" />
+
+                <div class="form-group row">
+                    <div class="offset-sm-2 col-10">
+                        <input type="submit" value="Update" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="divPreview" class="col-sm-6">
+        <img id="imgShirt" src="~/images/shirt.png"
+             style="position:absolute;left:0;top:0;width:480px;height:400px;background-color:
+             @Model.Color" />
+        <img id="imgPokeBack" src="
+             @String.Format(@"/images/{0}-200.png",Model.PokedexId)"
+             style="position:absolute;left:300px;top:130px;height:130px;width:130px" />
+        <img id="imgPokeFront" src="
+             @String.Format(@"/images/{0}-200.png",Model.PokedexId)"
+             style="position:absolute;left:
+             @String.Format("{0}px", Model.FrontPosition==0? 60:130);top:150px;height:40px;width:40px" />
+    </div>
+
+
+</div>
+<!-- 19047572 Konada Obadiah Nahshon-->

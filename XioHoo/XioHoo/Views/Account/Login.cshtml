@@ -1,0 +1,78 @@
+﻿@model CourseMangement.Models.ViewModels.UserLogin
+@{
+    ViewData["Title"] = "SignIn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var returnUrl = @Context.Request.Query["returnurl"];
+    var signupurl = string.IsNullOrEmpty(returnUrl) ? "/Account/Signup" : "/Account/Signup?returnurl=" + @returnUrl;
+    
+}
+
+<section id="contact" class="contact">
+
+    <div class="container" data-aos="fade-up">
+
+        <header class="section-header">
+            <p>Sign In Here</p>
+        </header>
+
+
+
+
+
+        <div class="col-lg-12">
+            <div class="col-lg-4"></div>
+            <div class="col-lg-4" style="margin-left:400px">
+                <form asp-action="Login" asp-route-returnurl="@returnUrl">
+                    <div class="row gy-4">
+
+                        <div class="col-md-12 ">
+                            <input class="form-control" asp-for="UserName" placeholder="Your Email" required>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input type="password" class="form-control" asp-for="Password" placeholder="Password" required>
+                        </div>
+
+                        <div class="sign-btn-wrapper text-center">
+                            <a href="@signupurl"><span>Dont have an account? </span>Sign Up Now</a>
+                        </div>
+
+
+                        <div class="col-md-12 text-center">
+
+
+                            <button class="getstarted scrollto btn btn-outline-info" type="submit">Sign IN</button>
+                        </div>
+
+                        <div class="col-md-12 text-center" style="margin-top:25px;">
+
+                            @if (ViewData["Errors"] != null)
+                            {
+                                <span class="alert alert-danger">@ViewData["Errors"]</span>
+                            }
+                            @if (ViewData["Message"] != null)
+                            {
+                                <span class="alert alert-success">@ViewData["Message"]</span>
+                            }
+
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-4"></div>
+
+
+        </div>
+
+
+
+    </div>
+</section>
+
+
+
+
+
+
+

@@ -1,0 +1,49 @@
+﻿@model Lesson
+
+@{
+    var l = ViewData["topics"];
+}
+
+<form id="fmNotes" class="form-horizontal" role="form">
+    <hr />
+    <div class="form-group row">
+        <label class="control-label col-sm-3"
+               style="text-align:left">Module Id:</label>
+        <input readonly="readonly" asp-for="@Model.ModuleId"
+               class="form-control-plaintext no-border col-sm-2" style="border: 0" />
+
+        <label class="col-sm-offset-1 control-label col-sm-2"
+               style="text-align:left">Lesson:</label>
+        <input readonly="readonly" asp-for="@Model.LessonId"
+               class="form-control-plaintext col-sm-1" style="border: 0" />
+    </div>
+
+    <div class="form-group row">
+        <label class="control-label col-sm-3"
+               style="text-align:left">Module Name:</label>
+        <input readonly="readonly" asp-for="@Model.Module.Name"
+               class="form-control-plaintext col-sm-6" style="border: 0; text-align:left" />
+    </div>
+
+    <hr />
+
+    @{
+        // TODO P10 Solution Task: Add UI to allow user to select topic for this lesson
+    }
+    <div class="form-group row">
+        <label class="control-label col-sm-3"
+               style="text-align:left">Topic:</label>
+        <select asp-for="@Model.TopicId"
+                asp-items="@((SelectList)ViewData["topics"])"
+                class="form-control-plaintext col-sm-6">
+            <option value="">--SELECT--</option>
+        </select>
+    </div>
+
+
+    <div class="form-group row">
+        <label class="control-label col-sm-1" style="text-align:left">Notes:</label>
+        <textarea asp-for="@Model.Notes" class="form-control" rows="15"></textarea>
+    </div>
+</form>
+<!-- 19047572 Konada Obadiah Nahshon-->

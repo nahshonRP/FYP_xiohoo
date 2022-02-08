@@ -1,0 +1,52 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>jQuery Exercises</title>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script>
+
+        //TODO Lesson04 Task 1 Ex5-1: Implement the SetFontSize function
+        function SetFontSize() {
+            // TODO Lesson04 Task 1 Ex5-1a: use jQuery this selector and val() method to assign the value of the element that trigger this function to a variable named size
+            var size = $(this).val();
+
+            // TODO Lesson04 Task 1 Ex5-1b: use jQuery css method to set the css "font-size" property of element with id "par2" to the value of the variable named size
+            $("#par2").css("font-size", size);
+        }
+
+
+        $(document).ready(function () {
+            // TODO Lesson04 Task 1 Ex1: use javascript alert method to display pop up box with text "Page loaded!"
+            alert("Page loaded!");
+            // TODO Lesson04 Task 1 Ex2: use jQuery css method to set the css "color" property of all paragraph elements to red
+            $("p").css("color", "red");
+            // TODO Lesson04 Task 1 Ex3: use jQuery css method to set the css "font-style" property of element with id "par1" to italic
+            $("#par1").css("font-style", "italic");
+            // TODO Lesson04 Task 1 Ex4: use jQuery attr method to set the width of element with id imgEx to 50px
+            $("#imgEx").attr("width", "50px");
+            // TODO Lesson04 Task 1 Ex5-2: use jQuery change Event method to call SetFontSize function whenever the value of select element with id ddlFontSize changes
+            $("#ddlFontSize").change(SetFontSize);
+        });
+    </script>
+</head>
+<body>
+    <div>
+        <p id="par1">Paragraph 1</p>
+        <p id="par2">Paragraph 2</p>
+        <img id="imgEx" src="~/images/ExImg1.jpg" /><br />
+        <select id="ddlFontSize">
+            <option value="30px">30px</option>
+            <option value="60px">60px</option>
+            <option value="90px">90px</option>
+        </select><br />
+    </div>
+</body>
+</html>
+<!-- 19047572 Konada Obadiah Nahshon-->

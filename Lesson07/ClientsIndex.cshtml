@@ -1,0 +1,34 @@
+﻿@model List<Client>
+
+@{
+    ViewBag.Title = "Manage Clients";
+}
+
+<h2>Manage Clients</h2>
+<span style="color:red">@TempData["Msg"]</span>
+<br />
+<a asp-action="AddNewClient">Add New Client</a>
+<table class="table table-bordered table-condensed table-hover table-striped">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Photo Package</th>
+        <th>Actions</th>
+    </tr>
+    @{
+        // TODO Lesson07 Revision Task 2b: Complete the display
+    }
+    @foreach (var c in Model)
+    {
+        <tr>
+            <td>@c.Id</td>
+            <td>@c.Name</td>
+            <td>@c.Package.Name</td>
+            <td>
+                <a asp-action="UpdateClient" asp-route-id="@c.Id">Update</a>
+                <a asp-action="Delete" asp-route-id="@c.Id" onclick="return ConfirmDelete()">Delete</a>
+            </td>
+        </tr>
+    }
+</table>
+<!-- 19047572 konada obadiah nahshon-->

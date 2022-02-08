@@ -1,0 +1,86 @@
+﻿@model List<dynamic>
+
+@{
+    Layout = "_SingRoomLayout";
+
+    int ryear = (int)ViewData["ryear"];
+    int rmonth = (int)ViewData["rmonth"];
+}
+
+@if (ryear > 0)
+{
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="SalesSummary">Overall</a></li>
+        @if (rmonth > 0)
+        {
+            <li class="breadcrumb-item">
+                <a asp-action="SalesSummary"
+                   asp-route-ryear="@ryear">@ryear</a>
+            </li>
+        }
+    </ol>
+}
+
+@if (Model == null)
+{
+    <h2>Complete Task 2 to view summary</h2>
+
+}
+else
+{
+    <h2>@ViewData["reportheader"]</h2>
+    <table class="table table-bordered table-condensed table-hover table-striped">
+        <tr>
+            <th class="col-1" width="24%">
+                @{ // TODO Lesson02 Task 2g: Uncomment the following block and delete away the original text "Period" 
+                }
+                @if (ryear == 0)
+                {
+                    <text>Year</text>
+                }
+                else if (rmonth == 0)
+                {
+                    <text>Month</text>
+                }
+                else
+                {
+                    <text>Day</text>
+                }
+
+                @{ // TODO Lesson02 Task 2h: Verification - view all levels of sales summary to ensure proper column headers are displayed 
+                   }
+            </th>
+            <th class="col-1" width="19%">Total</th>
+            <th class="col-1" width="19%">Average</th>
+            <th class="col-1" width="19%">Lowest</th>
+            <th class="col-1" width="19%">Highest</th>
+        </tr>
+        @foreach (var l in Model)
+        {
+            <tr>
+                <td class="col-1" width="24%">
+                    @if (ryear == 0)
+                    {
+                        <a asp-action="SalesSummary"
+                           asp-route-ryear="@l.Group">@l.Group</a>
+                    }
+                    else if (rmonth == 0)
+                    {
+                        <a asp-action="SalesSummary"
+                           asp-route-ryear="@ryear"
+                           asp-route-rmonth="@l.Group">@l.Group</a>
+                    }
+                    else
+                    {
+                        @l.Group
+                    }
+                </td>
+                <td class="col-1" width="19%">@String.Format("{0:0.00}", l.Total)</td>
+                <td class="col-1" width="19%">@String.Format("{0:0.00}", l.Average)</td>
+                <td class="col-1" width="19%">@String.Format("{0:0.00}", l.Lowest)</td>
+                <td class="col-1" width="19%">@String.Format("{0:0.00}", l.Highest)</td>
+            </tr>
+        }
+    </table>
+}
+<!-- 19047572 Konada Obadiah Nahshon -->

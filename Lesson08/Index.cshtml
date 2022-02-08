@@ -1,0 +1,64 @@
+﻿@model List<Module>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section ScriptSection {
+    <script>
+        @{
+// TODO Lesson08 Solution Task: Complete LoadNotes function to load the result of RPNotes/GetNotes action into div with id divNotes
+        }
+            function LoadNotes(moduleId, lessonId) {
+                var url = "/RPNotes/GetNotes?moduleId=" + moduleId + "&lessonId=" + lessonId;
+                $("#divNotes").load(url);
+        }
+
+        @if (TempData["Msg"] != null)
+        {
+            <text>
+        $(document).ready(function () {
+            alert('@TempData["Msg"]');
+
+        })
+            </text>
+
+        }
+    </script>
+    <style>
+        .pre-scrollable {
+            max-height: 100%;
+            overflow-y: scroll;
+        }
+    </style>
+}
+
+<div class="col-2">
+    <img src="~/images/logo.png" style="width:60px;height:60px;margin-left:30px;margin-top:30px" /><br /><br />
+    <div class="btn-group-vertical pre-scrollable align-top" style="width:150px;height:auto">
+        @if (Model != null)
+        {
+            @foreach (Module m in Model)
+            {
+                <button class="btn btn-link text-left" data-toggle="collapse" data-target="@String.Format("#{0}div", m.ModuleId)" style="text-align:left">@m.ModuleId</button>
+                <div id="@String.Format("{0}div", m.ModuleId)" class="collapse">
+                    <div class="btn-group-vertical col-1">
+                        @foreach (Lesson l in m.Lesson.ToList())
+                        {
+                            <button class="btn btn-link" onclick="return LoadNotes('@m.ModuleId',@l.LessonId)">Lesson&nbsp;@l.LessonId</button>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<div id="divNotes" class="col-8">
+    @{
+        // TODO Lesson08 Solution Task: Render the _Note partial view here, use the first lesson of the first module of Model as the model.
+        <partial name="_Note" model="Model[0].Lesson.ToList()[0]" />
+    }
+</div>
+<!-- 19047572 Konada Obadiah Nahshon-->

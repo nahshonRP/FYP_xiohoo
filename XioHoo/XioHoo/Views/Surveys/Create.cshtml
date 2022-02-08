@@ -1,0 +1,50 @@
+﻿@model CourseMangement.Models.Survey
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Survey</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+       
+        <form asp-action="Create">
+            <div class="row">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group col-md-3 ">
+                    <label asp-for="Name" class="control-label">Survey details</label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-3 ">
+                    <label asp-for="Rating" class="control-label"></label>
+                    <input asp-for="Rating" class="form-control" />
+                    <span asp-validation-for="Rating" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6 ">
+                    <label asp-for="Comments" class="control-label"></label>
+                    <textarea asp-for="Comments" rows="3" class="form-control" required></textarea>
+                    <span asp-validation-for="Comments" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check" style="margin-left:20px;padding:5px">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Status"  style="margin-left:0px"/> @Html.DisplayNameFor(model => model.Status)
+                    </label>
+                </div>
+                <div class="form-group" style="margin:10px">
+                    <input type="submit" value="Create" class="btn btn-outline-success" />
+                </div>
+            </div>
+        </form>
+        
+       
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

@@ -1,0 +1,42 @@
+﻿@model Client
+
+<script>
+    $(document).ready(function () {
+        $("form").submit(function () {
+            if ($(this).valid()) {
+                if (confirm("proceed? click OK to confirm.") == false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                };
+            };
+        });
+    });
+
+
+</script>
+
+
+<h2>Update Client</h2>
+
+<div class="row">
+    <div class="col-sm-7">
+        <form asp-controller="Client" asp-action="UpdateClient" method="post" class="form-horizontal" role="form">
+            <div class="form-horizontal">
+                <div class="form-group row">
+                    <label class="col-2 control-label" for="Id">Id</label>
+                    <div class="col-5">
+                        <input class="form-control" readonly="readonly" type="number" data-val="true" data-val-required="The Id field is required." id="Id" name="Id" value="1" />
+                    </div>
+                </div>
+                <partial name="_Client" />
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-10">
+                        <input type="submit" value="Update" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- 19047572 konada obadiah nahshon-->

@@ -1,0 +1,223 @@
+﻿@model IEnumerable<CourseMangement.Models.Course>
+@using Microsoft.AspNetCore.Identity
+@using CourseMangement.Models;
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var currentuser = await UserManager.GetUserAsync(User);
+    var name = "";
+    var rolename = "";
+    var userid = 0;
+    var roles = new List<string>();
+    if (currentuser != null)
+    {
+        name = currentuser.FullName;
+        rolename = currentuser.RoleName;
+        userid = currentuser.Id;
+        var ilist = await UserManager.GetRolesAsync(currentuser);
+        roles = ilist.ToList();
+
+    }
+
+    var issignin = SignInManager.IsSignedIn(User);
+
+}
+@{
+    ViewData["Title"] = "Index";
+    var current = Model.Where(a => a.CourseDate.Date >= DateTime.Now);
+    var previous = Model.Where(a => a.CourseDate.Date < DateTime.Now);
+}
+
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<div class="m-4">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="nav-item">
+            <a href="#home" class="nav-link active" data-bs-toggle="tab">Current</a>
+        </li>
+        <li class="nav-item">
+            <a href="#profile" class="nav-link" data-bs-toggle="tab">Previous</a>
+        </li>
+        
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="home" style="padding:10px">
+            <table class="table table-hover table-bordered" id="t1">
+                <thead>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Duration
+                        </th>
+                        <th>
+                            Fee
+                        </th>
+                        <th>
+                            Language
+                        </th>
+                        <th>
+                            CourseDate
+                        </th>
+                        <th>
+                            Availability
+                        </th>
+                        <th>
+                            Suitable Age Group
+                        </th>
+                        <th>
+                            Category
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in current)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CourseDuration)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CourseFee)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Language)
+                            </td>
+                            <td>
+                                @item.CourseDate.ToString("dd MMM yyyy")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SuitableAgeGroup)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CourseCategories.Name)
+                            </td>
+                            <td>
+                                @if (rolename.ToLower().Contains("trainer"))
+                                {
+                                    <a asp-action="AssignToUser" asp-route-id="@item.Id">Participants/Trainers</a>
+                                    if (item.CourseDate.Date >= DateTime.Now.Date)
+                                    {
+                                        <a asp-action="Attendance" class="btn btn-outline-primary" asp-route-id="@item.Id">Attendance</a>
+
+                                    }
+                                }
+                                @if (rolename.ToLower().Contains("partici"))
+                                {
+                                    if (item.CourseDate.Date >= DateTime.Now.Date)
+                                    {
+                                        <a asp-action="FillSurvey" asp-route-id="@item.Id">Fill Survey</a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="profile" style="padding:10px">
+            <table class="table table-hover table-bordered" id="t1">
+                <thead>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Duration
+                        </th>
+                        <th>
+                            Fee
+                        </th>
+                        <th>
+                            Language
+                        </th>
+                        <th>
+                            Course Date
+                        </th>
+                        <th>
+                            Availability
+                        </th>
+                        <th>
+                            Suitable Age Group
+                        </th>
+                        <th>
+                            Category
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in previous)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CourseDuration)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CourseFee)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Language)
+                            </td>
+                            <td>
+                                @item.CourseDate.ToString("dd MMM yyyy")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SuitableAgeGroup)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CourseCategories.Name)
+                            </td>
+                            <td>
+                                @if (rolename.ToLower().Contains("trainer"))
+                                {
+                                    <a asp-action="AssignToUser" asp-route-id="@item.Id">Participants/Trainers</a>
+                                    if (item.CourseDate.Date >= DateTime.Now.Date)
+                                    {
+                                        <a asp-action="Attendance" class="btn btn-outline-primary" asp-route-id="@item.Id">Attendance</a>
+
+                                    }
+                                }
+                                @if (rolename.ToLower().Contains("partici"))
+                                {
+                                    if (item.CourseDate.Date >= DateTime.Now.Date)
+                                    {
+                                        <a asp-action="FillSurvey" asp-route-id="@item.Id">Fill Survey</a>
+                                    }
+                                }
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('#t1').DataTable({
+            /* No ordering applied by DataTables during initialisation */
+            "order": []
+        });
+
+
+    });
+</script>

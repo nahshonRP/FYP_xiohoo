@@ -1,0 +1,128 @@
+﻿@model CourseMangement.Models.Course
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Delete">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="CourseDuration" class="control-label">Course Duration</label>
+                    <input asp-for="CourseDuration" class="form-control" required />
+                    <span asp-validation-for="CourseDuration" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="CourseFee" class="control-label">Course Fee</label>
+                    <input asp-for="CourseFee" class="form-control" min="5" max="500" required />
+                    <span asp-validation-for="CourseFee" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Language" class="control-label"></label>
+                    <select asp-for="Language" class="form-control" required>
+                        <option value="">Select Language</option>
+                        <option value="English">English</option>
+                        <option value="Chinese">Chinese</option>
+                    </select>
+                    <span asp-validation-for="Language" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Prerequisite" class="control-label">Pre-requisite</label>
+                    <input asp-for="Prerequisite" class="form-control" required />
+                    <span asp-validation-for="Prerequisite" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-4">
+
+                    <label asp-for="DeviceToBring" class="control-label">Device To Bring</label>
+                    <select class="form-control" asp-for="DeviceToBring" required>
+                        <option value="">Select Items</option>
+                        <option value="Mobile">Mobile</option>
+                        <option value="Laptop">Laptop</option>
+                    </select>
+                    <span asp-validation-for="DeviceToBring" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Ratings" class="control-label"></label>
+                    <input asp-for="Ratings" class="form-control" required />
+                    <span asp-validation-for="Ratings" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Comments" class="control-label"></label>
+                    <input asp-for="Comments" class="form-control" required />
+                    <span asp-validation-for="Comments" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="CourseDate" class="control-label">Course Date</label>
+                    <input type="date" asp-for="CourseDate" class="form-control" required />
+                    <span asp-validation-for="CourseDate" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="CourseStartTime" class="control-label">Course Start Time</label>
+                    <input type="time" asp-for="CourseStartTime" class="form-control" required />
+                    <span asp-validation-for="CourseStartTime" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="CourseEndTime" class="control-label">Course End Time</label>
+                    <input type="time" asp-for="CourseEndTime" class="form-control" required />
+                    <span asp-validation-for="CourseEndTime" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Venue" class="control-label"></label>
+                    <select class="form-control" asp-for="Venue" required>
+                        <option value="">Select Venue</option>
+                        <option value="HBL">HBL</option>
+                        <option value="OnCampus">On Campus</option>
+                    </select>
+                    <span asp-validation-for="Venue" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label asp-for="SuitableAgeGroup" class="control-label">Suitable Age Group</label>
+                    <select class="form-control" asp-for="SuitableAgeGroup" required>
+                        <option value="">Select Age Group</option>
+                        <option value="Kids">Kids</option>
+                        <option value="Adults">Adults</option>
+                        <option value="Seniors">Seniors</option>
+                    </select>
+                    <span asp-validation-for="SuitableAgeGroup" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="FkCourseCategoryId" class="control-label">Category</label>
+                    <select required asp-for="FkCourseCategoryId" class="form-control" asp-items="ViewBag.FkCourseCategoryId">
+                        <option value="">Select Category</option>
+                    </select>
+                    <span asp-validation-for="FkCourseCategoryId" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" required />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check col-md-4 ml-3">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Delete" class="btn btn-danger" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

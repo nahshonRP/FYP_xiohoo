@@ -1,0 +1,70 @@
+﻿@model ShirtOrder
+
+@{
+    ViewBag.Title = "New Shirt Order";
+
+}
+
+@section ScriptSection {
+    <script>
+        @{
+// TODO Lesson05 Task Solution - implement appropriate function here to calculate subtotal
+        }
+        function CalcST() {
+            var qty = $("#txtQty").val();
+            var price = $("#txtPrice").val();
+            var subtotal = qty * price;
+            $("#txtSubtotal").val(subtotal.toFixed(2));
+        }
+
+        $(document).ready(function () {
+                    @{
+// TODO Lesson05 Task Solution - implement appropriate jQuery code here to recalculate subtotal whenever qty or price changed by user
+        }
+            $("#txtQty").change(CalcST);
+            $("#txtPrice").change(CalcST);
+
+            $("form").submit(function () {
+
+        @{
+// TODO Lesson05 Task Solution - modify code below to allow cancellation
+        }
+                function ConfirmCancel() {
+                    if (confirm("do you want to continue?") == false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-8">
+        <form asp-controller="ShirtOrder" asp-action="Create" method="post" class="form-horizontal" role="form">
+            <div class="form-horizontal">
+                @{
+                    Html.RenderPartial("_ShirtOrder");
+                }
+                <div class="form-group row">
+                    <label class="col-4 control-label">Subtotal: </label>
+                    <div class="col-6" style="padding-right:15px">
+                        <input id="txtSubtotal" class="form-control" readonly="readonly" value="0" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-offset-4 col-10">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="divPreview" class="col-offset-1 col-4">
+    </div>
+</div>
+<!--19047572 Konada Obadiah Nahshon-->

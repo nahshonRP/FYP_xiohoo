@@ -1,0 +1,122 @@
+﻿@model CourseMangement.Models.ViewModels.CourseSurveyViewModel
+@{
+    ViewData["Title"] = "Assign Survey";
+    var assignedTrainers = ViewData["AssignedUsers"] as List<ApplicationUser>;
+    var unAssignedusers = ViewData["UnassignedUserArr"] as List<ApplicationUser>;
+    var courceid = ViewData["id"] == null ? 0 : Convert.ToInt32(ViewData["id"]);
+    var ss = Model.Survey;
+
+    var sq = new List<SurveyQuestions>();
+    if (ss != null)
+    {
+        sq = ss.SurveyQuestions;
+    }
+}
+
+<h1>Edit</h1>
+
+<h4>Course</h4>
+<hr />
+<div class="row" style="margin-bottom:10px">
+
+    <div style="margin-bottom:30px;margin-top:20px;">
+        @if (ViewData["Error"] != null)
+        {
+            <span class="alert alert-danger">@ViewData["Error"]</span>
+        }
+        @if (ViewData["Message"] != null)
+        {
+            <span class="alert alert-success">@ViewData["Message"]</span>
+        }
+    </div>
+    <div class="col-md-12">
+        <form asp-action="AssignSurvey">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="FkCourceId" />
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label asp-for="FkCourceId " class="control-label">Selected Course</label>
+                    <select required asp-for="FkCourceId" class="form-control" asp-items="ViewBag.Courses" disabled>
+                    </select>
+                    <span asp-validation-for="FkCourceId" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="FkSurveyId " class="control-label">Selected Course</label>
+                    <select required asp-for="FkSurveyId" class="form-control" asp-items="ViewBag.Surveys">
+                        <option value="">Select A Survey</option>
+                    </select>
+                    <span asp-validation-for="FkSurveyId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group" style="padding:20px">
+                @if (Model.Id == 0)
+                {
+                    <input type="submit" value="Assign Survey" class="btn btn-outline-danger" />
+                }
+                else
+                {
+                    <input type="submit" value="Update Assigned Survey" class="btn btn-outline-danger" />
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Survey != null)
+{
+    <table cellspacing="10" class="table" width="300px" border="1">
+        <tr>
+            <td width="250"><label><b>Survey Name:</b> </label>@Model.Survey.Name </td>
+            <td width="250"><label><b>Survey Created Date:</b> </label>@Model.Survey.DateCreated </td>
+        </tr>
+    </table>
+
+    <div class="row" style="margin-top:20px;border-width:1px;border-style:solid">
+        <h3>Survey Questions</h3>
+
+        <table class="table table-hover table-bordered" border="1" style="margin:10px" id="t1">
+            <thead>
+                <tr style="background-color:lightgray">
+                    <th>
+                        Question ID
+                    </th>
+                    <th>
+                        Question Title
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Survey.SurveyQuestions)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Question.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Question.Name)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+<script>
+    
+
+    });
+    $('#FkSurveyId').change(function () {
+        var surid = $(this).val();
+        var courceid = @courceid;
+        window.location.href = "/cources/AssignSurvey/" + courceid + "?surveyid="+surid;
+    })
+</script>

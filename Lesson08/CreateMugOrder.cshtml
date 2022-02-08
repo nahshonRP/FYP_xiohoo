@@ -1,0 +1,83 @@
+﻿@model MugOrder
+
+@{
+    Layout = "_ExLayout";
+    ViewData["Title"] = "New Mug Order";
+}
+
+@section ScriptSection {
+    <script>
+        @{
+// TODO Lesson08 Ex3c Complete the ajaxLoadMug function to load the result of /Home/LoadMug into div with id divPreview.
+                    }
+                    function ajaxLoadMug() {
+                        var color = "white";
+                        var color = $("#rdColor1").is(":checked") ?
+                            $("#rdColor1").val() : $("#rdColor2").val();
+                        var pokedexid = $("#ddlPoke").val();
+
+                        var url = "/Home/LoadMug?color=" + color + "&pokedexid=" + pokedexid;$("#divPreview").load(url)
+
+                    }
+
+        $(document).ready(function () {
+            @{
+                // TODO Lesson08 Ex3d Add few lines of code to call ajaxLoadMug function whenever one of the value of radio buttons and select element with ids rdColor1, rdColor2 & ddlPoke is changed. Navigate to /Home/CreateMugOrder to test out your code.
+            }
+            $("#rdColor1").change(ajaxLoadMug);
+            $("#rdColor2").change(ajaxLoadMug);
+
+            $("#dd1Poke").change(ajaxLoadMug);
+            $("form").submit(function () {
+                                if (confirm("Proceed? Press OK to confirm.") == false) {
+                    event.preventDefault();   // not working in IE
+                    event.stopPropagation();  // not working in Firefox
+                    return false;             // working in IE
+                };
+                });
+        });
+
+
+    </script>
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-6">
+        <form asp-controller="MugOrder" asp-action="Create" method="post" class="form-horizontal" role="form">
+            <div class="form-horizontal">
+                <div class="form-group row">
+                    <label asp-for="Color" class="col-3 control-label"></label>
+                    <div class="col-6">
+                        <input id="rdColor1" type="radio" asp-for="Color"
+                               value="white" checked="checked" /> White
+                        <input id="rdColor2" type="radio" asp-for="Color"
+                               value="silver" /> Silver
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label asp-for="PokedexId" class="col-3 control-label">
+                        Pokedex
+                    </label>
+                    <div class="col-6">
+                        <select id="ddlPoke" class="form-control col-6"
+                                asp-for="PokedexId" asp-items="@((SelectList)ViewData["pokes"])">
+                            <option value="0">-- SELECT --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-offset-3 col-10">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="divPreview" class="col-6">
+        <partial name="_ShowMug" model="new MugOrder()" />
+    </div>
+</div>
+<!-- 19047572 Konada Obadiah Nahshon-->

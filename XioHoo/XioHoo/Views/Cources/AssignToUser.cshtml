@@ -1,0 +1,133 @@
+﻿@model CourseMangement.Models.CourseAssignee
+@using Microsoft.AspNetCore.Identity
+@using CourseMangement.Models;
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var currentuser = await UserManager.GetUserAsync(User);
+    var name = "";
+    var rolename = "";
+    var userid = 0;
+    var roles = new List<string>();
+    if (currentuser != null)
+    {
+        name = currentuser.FullName;
+        rolename = currentuser.RoleName;
+        userid = currentuser.Id;
+        var ilist = await UserManager.GetRolesAsync(currentuser);
+        roles = ilist.ToList();
+
+    }
+
+    var issignin = SignInManager.IsSignedIn(User);
+
+}
+
+@{
+    ViewData["Title"] = "AssignToUser";
+    var assignedTrainers = ViewData["AssignedUsers"] as List<ApplicationUser>;
+    var unAssignedusers = ViewData["UnassignedUserArr"] as List<ApplicationUser>;
+    var courceid = ViewData["id"] == null ? 0 : Convert.ToInt32(ViewData["id"]);
+}
+
+<h1>Edit</h1>
+
+<h4>Course</h4>
+<hr />
+<div class="row" style="margin-bottom:10px">
+    <div class="col-md-12">
+        @if (rolename.ToLower().Contains("admin"))
+        {
+            <form asp-action="AssignToUser">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label asp-for="fkCourseId " class="control-label">Selected Course</label>
+                        <select required asp-for="fkCourseId" class="form-control" asp-items="ViewBag.Courses">
+                            <option value="">Select Course</option>
+                        </select>
+                        <span asp-validation-for="fkCourseId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="fkUserId " class="control-label">Participant/Trainer</label>
+                        <select required asp-for="fkUserId" class="form-control">
+                            <option value="">Select User</option>
+                            @foreach (var item in unAssignedusers)
+                            {
+                                <option value="@item.Id">@item.FullName - (@item.RoleName)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="fkCourseId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group" style="padding:20px">
+                    <input type="submit" value="Assign" class="btn btn-success" />
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+<div class="row">
+
+
+    <table class="table table-hover table-bordered" border="1" style="margin:10px" id="t1">
+        <thead>
+            <tr style="background-color:lightgray">
+                <th>
+                    Name
+                </th>
+                <th>
+                    Availability
+                </th>
+                <th>
+                    Role
+                </th>
+                <th>
+                    DOB
+                </th>
+                <th>
+                    User Name
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in assignedTrainers)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserStatus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RoleName)
+                    </td>
+                    <td>
+                        @item.Joiningdate.ToString("dd MMM yyyy")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+
+                    <td>
+                        @if (rolename.ToLower().Contains("admin"))
+                        {
+                            <a class="btn btn-outline-danger" href="/cources/removeUser?id=@courceid&userid=@item.Id" id="@item.Id">Delete</a>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>

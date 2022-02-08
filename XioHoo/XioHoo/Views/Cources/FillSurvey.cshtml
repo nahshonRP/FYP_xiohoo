@@ -1,0 +1,132 @@
+﻿@model CourseMangement.Models.ViewModels.CourseSurveyViewModel
+@{
+    ViewData["Title"] = "FillSurvey";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Survey</h1>
+
+<hr />
+<div class="row">
+    <div class="row col-md-12" style="margin-top:20px">
+        @if (ViewData["Error"] != null)
+        {
+            <span class="alert alert-danger">@ViewData["Error"]</span>
+        }
+        @if (ViewData["Message"] != null)
+        {
+            <span class="alert alert-success">@ViewData["Message"]</span>
+        }
+        <form asp-action="FillSurvey">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <p>Course Information</p>
+            <div class="form-group">
+                <label class="control-label">Selected Course</label>
+                <input asp-for="FkCourceId" class="selectpicker form-control" disabled data-live-search="true" readonly />
+                <input asp-for="Course.Name" class="selectpicker form-control" disabled data-live-search="true" readonly />
+                <input asp-for="Course.CourseStartTime" class="selectpicker form-control" disabled data-live-search="true" readonly />
+                <input asp-for="Course.CourseEndTime" class="selectpicker form-control" disabled data-live-search="true" readonly />
+                <input asp-for="FkSurveyId" class="selectpicker form-control" disabled data-live-search="true" readonly />
+            </div>
+
+
+            @if (Model.Questions != null)
+            {
+                if (Model.IsAlreadySubnitted)
+                {
+                    @for (int i = 0; i < Model.Questions.Count; i++)
+                    {
+                        var qno = i + 1;
+                        var optionsvalu = $"Model.Questions[{i}].Value";
+                        <div class="form-group" style="background-color:lightgray;padding:10px;margin-top:10px">
+                            <label class="control-label" style="color:green">@qno . @Model.Questions[i].Name</label><br />
+                            <input type="hidden" id="Model.Questions[@i].Id" name="Model.Questions[@i].Id" value="@Model.Questions[i].Id" class="control-label" />
+                            <input type="hidden" id="Model.Questions[@i].Name" name="Model.Questions[@i].Name" value="@Model.Questions[i].Name" class="control-label" />
+                            <br />
+
+                            
+                            
+                            <input type="radio" asp-for="Questions[i].Value" value="5" readonly />
+                            Strongly Agree
+                           
+                            <input type="radio" asp-for="Questions[i].Value" value="4" readonly />
+                            Agree
+                            
+                            <input type="radio" asp-for="Questions[i].Value" value="3" readonly />
+                            Neutral
+                            
+                            <input type="radio" asp-for="Questions[i].Value" value="2" readonly />
+                            Disagree
+                            
+                            <input type="radio" asp-for="Questions[i].Value" value="1" readonly />
+                            Strongly Disagree
+                        </div>
+
+                    }
+                }
+                else
+                {
+                    @for (int i = 0; i < Model.Questions.Count; i++)
+                    {
+                        var qno = i + 1;
+                        var optionsvalu = $"Model.Questions[{i}].Value";
+                        <div class="form-group" style="background-color:lightgray;padding:10px;margin-top:10px">
+                            <label class="control-label" style="color:green">@qno . @Model.Questions[i].Name</label><br />
+                            <input type="hidden" id="Model.Questions[@i].Id" name="Model.Questions[@i].Id" value="@Model.Questions[i].Id" class="control-label" />
+                            <input type="hidden" id="Model.Questions[@i].Name" name="Model.Questions[@i].Name" value="@Model.Questions[i].Name" class="control-label" />
+                            <br />
+
+                            
+                            @Html.RadioButton(optionsvalu, "5", new { required = "required" })
+                            Strongly Agree
+                            
+                            @Html.RadioButton(optionsvalu, "4", new { required = "required" })
+                            Agree
+                            
+                            @Html.RadioButton(optionsvalu, "3", new { required = "required" })
+                            Neutral
+                            
+                            @Html.RadioButton(optionsvalu, "2", new { required = "required" })
+                            Disagree
+                            
+                            @Html.RadioButton(optionsvalu, "1", new { required = "required" })
+                            Strongly Disagree
+
+                        </div>
+
+                    }
+                }
+
+                <div class="form-group" style="background-color:lightgray;padding:10px;margin-top:10px">
+                    <label class="control-label" style="color:green">Please rate the course from 1 to 5: </label><br />
+                    <input asp-for="Ratings" class="form-control" type="number" min="1" max="5" required />
+                    <span asp-validation-for="Ratings" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" style="background-color:lightgray;padding:10px;margin-top:10px">
+                    <label class="control-label" style="color:green">9. Some suggestions/Comments for improvement are</label><br />
+                    <textarea asp-for="Comment" class="form-control" required rows="3"></textarea>
+                    <span asp-validation-for="Comment" class="text-danger"></span>
+                </div>
+
+                @if (Model.IsAlreadySubnitted)
+                {
+                    <div class="form-group" style="margin-top:30px">
+                        <label>You already submitted the survey</label>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group" style="margin-top:30px">
+                        <input type="submit" value="Submit" class="btn btn-outline-success" />
+                    </div>
+                }
+
+            }
+
+
+
+
+        </form>
+    </div>
+</div>
